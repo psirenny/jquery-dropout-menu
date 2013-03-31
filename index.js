@@ -1,9 +1,13 @@
 ;(function ($, window, document, undefined) {
-  var pluginName = "dropoutMenu";
+  var activeContext = null;
+  var pluginName = 'dropoutMenu';
   var defaults = {
+    context: '.dropout-context',
+    contextActiveCssClass: 'active',
     menu: '.dropout-menu',
-    on: 'click',
-    toggle: '.dropout-menu-toggle'
+    menuActiveCssClass: 'active',
+    toggle: '.dropout-toggle',
+    toggleActiveCssClass: 'active'
   };
 
   function Plugin(element, options) {
@@ -15,18 +19,43 @@
   }
 
   Plugin.prototype = {
-    init: function () {
-      console.log(this.element);
+    closeMenu: function (context) {
+      if (!activeContext) return;
+      var $context = $(activeContext.element);
+      $context.removeClass(activeContext.options.contextActiveCssClass);
+      $context.find(activeContext.options.menu).removeClass(activeContext.options.menuActiveCssClass);
+      $context.find(activeContext.options.toggle).removeClass(activeContext.options.toggleActiveCssClass);
+      activeContext = null;
     },
-    yourOtherFunction: function () {
-      // some logic
+    init: function () {
+      $(this.element).on('click', this, this.onToggleMenu);
+      $('html').on('click', this, this.onCloseMenu);
+    },
+    onCloseMenu: function (event) {
+      event.data.closeMenu();
+    },
+    onToggleMenu: function (event) {
+      if (event.data === activeContext) {
+        event.data.closeMenu();
+      } else {
+        event.data.closeMenu();
+        event.data.openMenu(event.data);
+      }
+      event.stopPropagation();
+    },
+    openMenu: function (context) {
+      var $context = $(context.element);
+      $context.addClass(context.options.contextActiveCssClass);
+      $context.find(context.options.menu).addClass(context.options.menuActiveCssClass);
+      $context.find(context.options.toggle).addClass(context.options.toggleActiveCssClass);
+      activeContext = context;
     }
   };
 
   $.fn[pluginName] = function (options) {
     return this.each(function () {
-      if (!$.data(this, "plugin_" + pluginName)) {
-        $.data(this, "plugin_" + pluginName, new Plugin(this, options));
+      if (!$.data(this, 'plugin_' + pluginName)) {
+        $.data(this, 'plugin_' + pluginName, new Plugin(this, options));
       }
     });
   };

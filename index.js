@@ -35,6 +35,7 @@
       event.data.closeMenu();
     },
     onToggleMenu: function (event) {
+      event.preventDefault();
       if (event.data === activeContext) {
         event.data.closeMenu();
       } else {

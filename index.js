@@ -36,13 +36,13 @@
     },
     onToggleMenu: function (event) {
       event.preventDefault();
+      event.stopPropagation();
       if (event.data === activeContext) {
         event.data.closeMenu();
       } else {
         event.data.closeMenu();
         event.data.openMenu(event.data);
       }
-      event.stopPropagation();
     },
     openMenu: function (context) {
       var $context = $(context.element);

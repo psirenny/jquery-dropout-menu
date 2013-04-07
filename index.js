@@ -28,7 +28,7 @@
       activeContext = null;
     },
     init: function () {
-      $(this.element).on('click', this, this.onToggleMenu);
+      $(this.element).on('click', this.options.toggle, this, this.onToggleMenu);
       $('html').on('click', this, this.onCloseMenu);
     },
     onCloseMenu: function (event) {

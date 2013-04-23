@@ -62,21 +62,23 @@
       $menu.addClass(data.options.menuActiveCssClass);
       activeContext = context;
 
-      if (!($menu.offset().top > $(document).scrollTop() + $(window).height() / 2)) {
-        $menu.css('bottom', -1 * $menu.height());
-      } else {
+      if ($menu.offset().top > $(document).scrollTop() + $(window).height() / 2) {
         $menu.css('top', -1 * $menu.height());
+      } else {
+        $menu.css('bottom', -1 * $menu.height());
       }
 
-      if (!($menu.offset().left > $(document).scrollLeft() + $(window).width() / 2)) {
-        $menu.css('left', 0);
-      } else {
+      if ($menu.offset().left > $(document).scrollLeft() + $(window).width() / 2) {
         $menu.css('right', 0);
+      } else {
+        $menu.css('left', 0);
       }
     }
   };
 
   $.fn[pluginName] = function (options) {
+    options = options || {};
+    options.context = $(this).selector;
     return this.each(function () {
       if (!$.data(this, 'plugin_' + pluginName)) {
         $.data(this, 'plugin_' + pluginName, new Plugin(this, options));

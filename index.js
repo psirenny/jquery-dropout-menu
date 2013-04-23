@@ -2,7 +2,6 @@
   var activeContext = null;
   var pluginName = 'dropoutMenu';
   var defaults = {
-    context: '.dropout-context',
     contextActiveCssClass: 'active',
     menu: '.dropout-menu',
     menuActiveCssClass: 'active',
@@ -19,36 +18,47 @@
   }
 
   Plugin.prototype = {
-    closeMenu: function (context) {
+    closeMenu: function (data) {
       if (!activeContext) return;
-      var $context = $(activeContext.element);
-      $context.removeClass(activeContext.options.contextActiveCssClass);
-      $context.find(activeContext.options.menu).removeClass(activeContext.options.menuActiveCssClass);
-      $context.find(activeContext.options.toggle).removeClass(activeContext.options.toggleActiveCssClass);
+      var $context = $(activeContext);
+      $context.removeClass(data.options.contextActiveCssClass);
+      $context.find(data.options.menu).removeClass(data.options.menuActiveCssClass);
+      $context.find(data.options.toggle).removeClass(data.options.toggleActiveCssClass);
       activeContext = null;
     },
     init: function () {
-      $(this.element).on('click', this.options.toggle, this, this.onToggleMenu);
-      $('html').on('click', this, this.onCloseMenu);
+      $(document).off('click.dropout-menu-context').on('click.dropout-menu-context', this.options.context, this, this.onToggleMenu);
+      $(document).off('click.dropout-menu-html').on('click.dropout-menu-html', this, this.onCloseMenu);
     },
     onCloseMenu: function (event) {
-      event.data.closeMenu();
+      event.data.closeMenu(event.data);
     },
     onToggleMenu: function (event) {
+      var context = event.currentTarget
+      var found = false;
+
+      $(context).find(event.data.options.toggle).each(function () {
+        if (!$.contains(this, event.target)) return;
+        found = true;
+        return false;
+      });
+
+      if (!found) return;
       event.preventDefault();
       event.stopPropagation();
-      if (event.data === activeContext) {
-        event.data.closeMenu();
+
+      if (context === activeContext) {
+        event.data.closeMenu(event.data);
       } else {
-        event.data.closeMenu();
-        event.data.openMenu(event.data);
+        event.data.closeMenu(event.data);
+        event.data.openMenu(context, event.data);
       }
     },
-    openMenu: function (context) {
-      var $context = $(context.element);
-      $context.addClass(context.options.contextActiveCssClass);
-      $context.find(context.options.menu).addClass(context.options.menuActiveCssClass);
-      $context.find(context.options.toggle).addClass(context.options.toggleActiveCssClass);
+    openMenu: function (context, data) {
+      var $context = $(context);
+      $context.addClass(data.options.contextActiveCssClass);
+      $context.find(data.options.menu).addClass(data.options.menuActiveCssClass);
+      $context.find(data.options.toggle).addClass(data.options.toggleActiveCssClass);
       activeContext = context;
     }
   };

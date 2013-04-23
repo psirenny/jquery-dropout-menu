@@ -22,7 +22,7 @@
       if (!activeContext) return;
       var $context = $(activeContext);
       $context.removeClass(data.options.contextActiveCssClass);
-      $context.find(data.options.menu).removeClass(data.options.menuActiveCssClass);
+      $context.find(data.options.menu).removeClass(data.options.menuActiveCssClass).css('top', '').css('right', '').css('bottom', '').css('left', '');
       $context.find(data.options.toggle).removeClass(data.options.toggleActiveCssClass);
       activeContext = null;
     },

@@ -2,6 +2,7 @@
   var activeContext = null;
   var pluginName = 'dropoutMenu';
   var defaults = {
+    context: '.dropout-context',
     contextActiveCssClass: 'active',
     menu: '.dropout-menu',
     menuActiveCssClass: 'active',
@@ -21,9 +22,10 @@
     closeMenu: function (data) {
       if (!activeContext) return;
       var $context = $(activeContext);
-      $context.removeClass(data.options.contextActiveCssClass);
-      $context.find(data.options.menu).removeClass(data.options.menuActiveCssClass);
-      $context.find(data.options.toggle).removeClass(data.options.toggleActiveCssClass);
+      var options = data.options;
+      $context.removeClass(options.contextActiveCssClass);
+      $context.find(options.menu).removeClass(options.menuActiveCssClass);
+      $context.find(options.toggle).removeClass(options.toggleActiveCssClass);
       activeContext = null;
     },
     init: function () {
@@ -56,10 +58,23 @@
     },
     openMenu: function (context, data) {
       var $context = $(context);
+      var $menu = $context.find(data.options.menu);
       $context.addClass(data.options.contextActiveCssClass);
-      $context.find(data.options.menu).addClass(data.options.menuActiveCssClass);
       $context.find(data.options.toggle).addClass(data.options.toggleActiveCssClass);
+      $menu.addClass(data.options.menuActiveCssClass);
       activeContext = context;
+
+      if (!($menu.offset().top > $(document).scrollTop() + $(window).height() / 2)) {
+        $menu.css('bottom', -1 * $menu.height());
+      } else {
+        $menu.css('top', -1 * $menu.height());
+      }
+
+      if (!($menu.offset().left > $(document).scrollLeft() + $(window).width() / 2)) {
+        $menu.css('left', 0);
+      } else {
+        $menu.css('right', 0);
+      }
     }
   };
 

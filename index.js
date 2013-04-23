@@ -2,7 +2,6 @@
   var activeContext = null;
   var pluginName = 'dropoutMenu';
   var defaults = {
-    context: '.dropout-context',
     contextActiveCssClass: 'active',
     menu: '.dropout-menu',
     menuActiveCssClass: 'active',
@@ -22,10 +21,9 @@
     closeMenu: function (data) {
       if (!activeContext) return;
       var $context = $(activeContext);
-      var options = data.options;
-      $context.removeClass(options.contextActiveCssClass);
-      $context.find(options.menu).removeClass(options.menuActiveCssClass);
-      $context.find(options.toggle).removeClass(options.toggleActiveCssClass);
+      $context.removeClass(data.options.contextActiveCssClass);
+      $context.find(data.options.menu).removeClass(data.options.menuActiveCssClass);
+      $context.find(data.options.toggle).removeClass(data.options.toggleActiveCssClass);
       activeContext = null;
     },
     init: function () {

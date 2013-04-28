@@ -34,11 +34,11 @@
       event.data.closeMenu(event.data);
     },
     onToggleMenu: function (event) {
-      var context = event.currentTarget
+      var context = this;
       var found = false;
 
       $(context).find(event.data.options.toggle).each(function () {
-        if (!$.contains(this, event.target)) return;
+        if (this !== event.target && !$.contains(this, event.target)) return;
         found = true;
         return false;
       });
